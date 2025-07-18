@@ -5,11 +5,16 @@ import PurchaseModal from '../../components/Modal/PurchaseModal'
 import { use, useState } from 'react'
 import { useLoaderData } from 'react-router'
 import { AuthContext } from '../../providers/AuthProvider'
+import useRole from '../../hooks/useRole'
+import LoadingSpinner from '../../components/Shared/LoadingSpinner'
 
 const PlantDetails = () => {
   const plant = useLoaderData()
   let [isOpen, setIsOpen] = useState(false)
   const {user} = use(AuthContext)
+  const [role ,isRoleLoading ] = useRole()
+  if(isRoleLoading) return <div className=''><LoadingSpinner/></div>
+
 
 
   const closeModal = () => {
@@ -84,7 +89,7 @@ const PlantDetails = () => {
             <p className='font-bold text-3xl text-gray-500'>Price: {price}$</p>
             
             <div>
-              <Button onClick={() => setIsOpen(true)} label={user?.email ? "Purchase":"Login to purchase"} disabled={!user}/>
+              <Button onClick={() => setIsOpen(true)} label={user?.email ? "Purchase":"Login to purchase"} disabled={!user || user?.email === seller?.email || role !== "customer" }/>
             </div>
           </div>
           <hr className='my-6' />

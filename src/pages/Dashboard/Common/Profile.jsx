@@ -1,10 +1,14 @@
 import useAuth from '../../../hooks/useAuth'
 
 import coverImg from '../../../assets/images/cover.jpg'
+import LoadingSpinner from '../../../components/Shared/LoadingSpinner'
+import useRole from '../../../hooks/useRole'
 const Profile = () => {
   const { user } = useAuth()
+    const [role ,isRoleLoading ] = useRole()
+  if(isRoleLoading) return <div className=''><LoadingSpinner/></div>
 
-  console.log(user)
+
   return (
     <div className='flex justify-center items-center h-screen'>
       <div className='bg-white shadow-lg rounded-2xl md:w-4/5 lg:w-3/5'>
@@ -23,7 +27,7 @@ const Profile = () => {
           </a>
 
           <p className='p-2 px-4 text-xs text-white bg-lime-500 rounded-full'>
-            Customer
+           {role?.toUpperCase()}
           </p>
           <p className='mt-2 text-xl font-medium text-gray-800 '>
             User Id: {user.uid}

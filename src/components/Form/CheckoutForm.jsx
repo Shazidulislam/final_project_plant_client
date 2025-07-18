@@ -87,7 +87,13 @@ const CheckoutForm = ({totalPrice , closeModal , orderData}) => {
           if(data?.acknowledged){
             toast.success("Order successfully!")
           }
-    }
+
+          const { data:result } = await axiosSecure.patch(`/update_plant_quantity/${orderData?.plantId}` , {
+            updateQuantity:orderData?.quantity , status:"decrease"
+          })
+
+          console.log(result)
+     }
     catch(err){
         setCardError(err?.message)
     }

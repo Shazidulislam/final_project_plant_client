@@ -29,7 +29,7 @@ const Login = () => {
       email:user?.email,
       photoURL:user?.photoURL
      }
-      await saveUserInDB(userData)
+    await saveUserInDB(userData)
 
       navigate(from, { replace: true })
       toast.success('Login Successful')

@@ -2,24 +2,36 @@ import Container from '../../components/Shared/Container'
 import Heading from '../../components/Shared/Heading'
 import Button from '../../components/Shared/Button/Button'
 import PurchaseModal from '../../components/Modal/PurchaseModal'
-import { use, useState } from 'react'
-import { useLoaderData } from 'react-router'
-import { AuthContext } from '../../providers/AuthProvider'
+import {  useState } from 'react'
+import {  useParams } from 'react-router'
 import useRole from '../../hooks/useRole'
 import LoadingSpinner from '../../components/Shared/LoadingSpinner'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import useAuth from '../../hooks/useAuth'
 
 const PlantDetails = () => {
-  const plant = useLoaderData()
+  const {id} = useParams()
+  // const plant = useLoaderData()
   let [isOpen, setIsOpen] = useState(false)
-  const {user} = use(AuthContext)
+  const {user} = useAuth()
   const [role ,isRoleLoading ] = useRole()
-  if(isRoleLoading) return <div className=''><LoadingSpinner/></div>
-
-
+    const {  data:plant , isLoading , refetch} = useQuery(
+    {
+    queryKey:["plant", id] ,
+    queryFn: async()=>{
+        const {data} = await axios(`${import.meta.env?.VITE_API_URL}/plant/${id}`)
+        return data
+    },
+  }
+  )
+  if(isRoleLoading || isLoading) return <div className=''><LoadingSpinner/></div>
 
   const closeModal = () => {
     setIsOpen(false)
   }
+
+
    const {category ,image , name , price , quantity , _id ,seller ,description  } = plant || {}
   return (
     <Container>
@@ -94,7 +106,11 @@ const PlantDetails = () => {
           </div>
           <hr className='my-6' />
 
-          <PurchaseModal closeModal={closeModal} isOpen={isOpen} plant={plant} />
+          <PurchaseModal closeModal={closeModal}
+           isOpen={isOpen}
+            plant={plant}
+            fetchPlant={refetch}
+             />
         </div>
       </div>
     </Container>

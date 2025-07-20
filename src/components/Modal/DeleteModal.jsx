@@ -1,6 +1,23 @@
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { useMutation } from '@tanstack/react-query'
+import useAxiosSecure from '../../hooks/useAxiosSecure'
+import toast from 'react-hot-toast'
 
-const DeleteModal = ({ closeModal, isOpen }) => {
+const DeleteModal = ({ closeModal, isOpen , id }) => {
+   const axiosSecure = useAxiosSecure()
+  const {mutate} = useMutation({
+    mutationFn:async()=>{
+      const {data} = await axiosSecure.patch(`/orders/status/cancle/${id}`)
+      return data
+    },
+    onSuccess:(data)=>{
+      console.log(data)
+      toast.success("Hooooo cancle")
+    },
+    onError:(error)=>{
+      console.log(error)
+    }
+  })
   return (
     <Dialog
       open={isOpen}
@@ -28,7 +45,7 @@ const DeleteModal = ({ closeModal, isOpen }) => {
             <hr className='mt-8 ' />
             <div className='flex mt-2 justify-around'>
               <button
-                type='button'
+                type='button' onClick={mutate()}
                 className='inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2'
               >
                 Yes

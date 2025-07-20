@@ -5,15 +5,15 @@ import { useNavigate } from 'react-router'
 
 export const axiosSecure = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  
   withCredentials: true,
 })
 
 const useAxiosSecure = () => {
   const navigate = useNavigate()
-  const { logOut } = useAuth()
+  const { logOut  , loading} = useAuth()
   useEffect(() => {
-    axiosSecure.interceptors.response.use(
+   if(!loading){
+     axiosSecure.interceptors.response.use(
       res => {
         return res
       },
@@ -28,7 +28,8 @@ const useAxiosSecure = () => {
         return Promise.reject(error)
       }
     )
-  }, [logOut, navigate])
+   }
+  }, [logOut, navigate ,loading ])
   return axiosSecure
 }
 
